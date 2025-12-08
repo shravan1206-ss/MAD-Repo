@@ -35,44 +35,40 @@ import com.example.studymate.db.modules.DatabaseModule
 import com.example.studymate.ui.theme.AppBackground
 import com.example.studymate.ui.theme.StudyMateTheme
 
+import androidx.compose.ui.platform.LocalInspectionMode
+
 @Composable
 fun SplashScreen(navController: NavController) {
 
     val context = LocalContext.current
-    val db = remember { DatabaseModule.getDb(context) }
-    val scope = rememberCoroutineScope()
 
-    // Run auto login logic
-    LaunchedEffect(true) {
+    // Skip database + navigation in preview
+    val isPreview = LocalInspectionMode.current
 
-        val user = db.userDao().getUser()
+    if (!isPreview) {
+        val db = remember { DatabaseModule.getDb(context) }
 
-        if (user != null) {
-            // Auto-login
-            navController.navigate("home") {
-                popUpTo("splash") { inclusive = true }
-            }
-        } else {
-            // Go to login
-            navController.navigate("login") {
-                popUpTo("splash") { inclusive = true }
+        LaunchedEffect(true) {
+            val user = db.userDao().getUser()
+            if (user != null) {
+                navController.navigate("home") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            } else {
+                navController.navigate("login") {
+                    popUpTo("splash") { inclusive = true }
+                }
             }
         }
     }
 
-    // Animation
+    // -------- Animation & UI (safe for preview) ---------
+
     var start by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { start = true }
 
-    val scale by animateFloatAsState(
-        targetValue = if (start) 1f else 0.6f,
-        animationSpec = tween(900)
-    )
-
-    val alpha by animateFloatAsState(
-        targetValue = if (start) 1f else 0f,
-        animationSpec = tween(1000)
-    )
+    val scale by animateFloatAsState(targetValue = if (start) 1f else 0.6f)
+    val alpha by animateFloatAsState(targetValue = if (start) 1f else 0f)
 
     AppBackground {
         Box(
@@ -91,28 +87,12 @@ fun SplashScreen(navController: NavController) {
                         .alpha(alpha)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "StudyMate",
-                    color = Color.White,
-                    fontSize = 34.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.alpha(alpha)
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Stay focused. Stay ahead.",
-                    color = Color.White.copy(alpha = 0.9f),
-                    fontSize = 16.sp,
-                    modifier = Modifier.alpha(alpha)
-                )
+                Text("StudyMate", color = Color.White, fontSize = 34.sp)
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

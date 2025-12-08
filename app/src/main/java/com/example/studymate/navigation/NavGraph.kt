@@ -30,34 +30,31 @@ fun NavGraph(
     val duration = 320
     val authViewModel: AuthViewModel = viewModel()
 
-    // ========== ANIMATION HELPERS ==========
 
-    // New screen enters → slide from right + slight scale
     fun AnimatedContentTransitionScope<*>.enterTransition() = slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Left,
         tween(duration)
     ) + scaleIn(initialScale = 1.05f, animationSpec = tween(duration))
 
-    // Current screen exits → slide to left + fade
+
     fun AnimatedContentTransitionScope<*>.exitTransition() = slideOutOfContainer(
         AnimatedContentTransitionScope.SlideDirection.Left,
         tween(duration)
     ) + fadeOut(tween(duration)) + scaleOut(targetScale = 0.95f, animationSpec = tween(duration))
 
-    // Back navigation → slide from left
+
     fun AnimatedContentTransitionScope<*>.popEnterTransition() = slideIntoContainer(
         AnimatedContentTransitionScope.SlideDirection.Right,
         tween(duration)
     ) + scaleIn(initialScale = 0.95f, animationSpec = tween(duration)) + fadeIn(tween(duration))
 
-    // Back navigation → exit to right
+
     fun AnimatedContentTransitionScope<*>.popExitTransition() = slideOutOfContainer(
         AnimatedContentTransitionScope.SlideDirection.Right,
         tween(duration)
     ) + scaleOut(targetScale = 1.05f, animationSpec = tween(duration))
 
 
-    // ========== NAV HOST ==========
 
     NavHost(
         navController = navController,

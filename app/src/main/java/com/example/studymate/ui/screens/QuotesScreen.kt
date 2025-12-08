@@ -6,7 +6,7 @@ import com.example.studymate.ui.theme.StudyMateTheme
 
 @Composable
 fun QuotesScreen() {
-    FeatureDetailScreen(
+    StudyMateTheme() {FeatureDetailScreen(
         title = "Motivation Quotes",
         description = "Receive inspiring quotes to stay motivated.",
         features = listOf(
@@ -14,7 +14,7 @@ fun QuotesScreen() {
             "• Pull new quotes from API",
             "• Save favorite quotes"
         )
-    )
+    ) }
 }
 
 @Preview(showBackground = true)
