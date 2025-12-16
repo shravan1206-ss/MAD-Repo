@@ -25,8 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.studymate.db.dao.UserDAO
-import com.example.studymate.db.entity.UserEntity
 import com.example.studymate.ui.theme.AppBackground
 import com.example.studymate.ui.theme.StudyMateTheme
 import kotlinx.coroutines.launch
@@ -34,8 +32,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navController: NavController,
-    userDao: UserDAO
+    navController: NavController
 ) {
 
     val scope = rememberCoroutineScope()
@@ -51,7 +48,6 @@ fun HomeScreen(
                 ),
                 modifier = Modifier.shadow(8.dp),
 
-                // ----------- LOGOUT ICON HERE ------------
                 actions = {
                     IconButton(onClick = { showLogoutDialog = true }) {
                         Icon(
@@ -147,7 +143,6 @@ fun HomeScreen(
         }
     }
 
-    // ----------------- LOGOUT CONFIRMATION DIALOG -----------------
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
@@ -159,7 +154,6 @@ fun HomeScreen(
                 TextButton(onClick = {
                     showLogoutDialog = false
                     scope.launch {
-                        userDao.clearUser()
                         navController.navigate("login") {
                             popUpTo(0)
                         }
@@ -236,28 +230,11 @@ fun FeatureCard(
     }
 }
 
-class FakeUserDao : UserDAO {
-    override suspend fun saveUser(user: UserEntity) {
-        // No-op for preview
-    }
-
-    override suspend fun deleteUser(user: UserEntity) {
-        // No-op for preview
-    }
-
-    override suspend fun getUser(): UserEntity? {
-        return UserEntity(email = "user@example.com")
-    }
-
-    override suspend fun clearUser() {
-        // No-op for preview
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
     StudyMateTheme {
-        HomeScreen(navController = rememberNavController(), userDao = FakeUserDao())
+        HomeScreen(navController = rememberNavController())
     }
 }
