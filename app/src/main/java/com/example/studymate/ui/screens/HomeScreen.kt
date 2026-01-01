@@ -51,6 +51,7 @@ fun HomeScreen(
                 ),
                 modifier = Modifier.shadow(8.dp),
 
+                // ----------- LOGOUT ICON HERE ------------
                 actions = {
                     IconButton(onClick = { showLogoutDialog = true }) {
                         Icon(
@@ -146,7 +147,7 @@ fun HomeScreen(
         }
     }
 
-
+    // ----------------- LOGOUT CONFIRMATION DIALOG -----------------
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
@@ -237,11 +238,11 @@ fun FeatureCard(
 
 class FakeUserDao : UserDAO {
     override suspend fun saveUser(user: UserEntity) {
-
+        // No-op for preview
     }
 
     override suspend fun deleteUser(user: UserEntity) {
-
+        // No-op for preview
     }
 
     override suspend fun getUser(): UserEntity? {
@@ -249,7 +250,7 @@ class FakeUserDao : UserDAO {
     }
 
     override suspend fun clearUser() {
-
+        // No-op for preview
     }
 }
 

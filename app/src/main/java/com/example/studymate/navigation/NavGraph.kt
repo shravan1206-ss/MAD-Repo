@@ -10,10 +10,15 @@ import androidx.navigation.compose.rememberNavController
 import com.example.studymate.db.dao.UserDAO
 import com.example.studymate.firebase.AuthViewModel
 import com.example.studymate.ui.screens.HomeScreen
+import com.example.studymate.ui.screens.HomeScreen1
 import com.example.studymate.ui.screens.LoginScreen
+import com.example.studymate.ui.screens.NotificationScreen
+import com.example.studymate.ui.screens.QuotesScreen
 import com.example.studymate.ui.screens.SignUpScreen
 import com.example.studymate.ui.screens.SplashScreen
-
+import com.example.studymate.ui.screens.SubjectsScreen
+import com.example.studymate.ui.screens.TasksScreen
+import com.example.studymate.ui.screens.TimerScreen
 
 @Composable
 fun NavGraph(
@@ -98,6 +103,13 @@ fun NavGraph(
                 userDao = userDao
             )
         }
+
+        composable("home1") { HomeScreen1() }
+        composable("timer") { TimerScreen() }
+        composable("subjects") { SubjectsScreen() }
+        composable("tasks") { TasksScreen() }
+        composable("notifications") { NotificationScreen() }
+        composable("quotes") { QuotesScreen() }
 
     }
 }
