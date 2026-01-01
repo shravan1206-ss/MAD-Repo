@@ -18,15 +18,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.studymate.db.dao.UserDAO
+import com.example.studymate.db.entity.UserEntity
+import com.example.studymate.firebase.AuthViewModel
 import com.example.studymate.ui.theme.AppBackground
 import com.example.studymate.ui.theme.StudyMateTheme
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     navController: NavController,
+    userDao: UserDAO,
+    authViewModel: AuthViewModel?
 ) {
 
     var email by remember { mutableStateOf("") }
@@ -121,31 +125,35 @@ fun LoginScreen(
 
                                 loading = true
 
-                                FirebaseAuth.getInstance()
-                                    .signInWithEmailAndPassword(email, password)
-                                    .addOnSuccessListener {
+                                authViewModel?.login(
+                                    email,
+                                    password,
+                                    onSuccess = {
                                         scope.launch {
-                                            snackbarHostState.showSnackbar("Successfully Logged In!")
-                                            delay(300)
+                                            userDao.saveUser(
+                                                UserEntity(email = email)
+                                            )
 
-                                            navController.navigate("home") {
-                                                popUpTo("login") { inclusive = true }
+                                            navController.navigate("home1") {
+                                                popUpTo("splash") { inclusive = true }
+                                                launchSingleTop = true
                                             }
 
+                                            snackbarHostState.showSnackbar("Successfully Logged In!")
+                                            delay(200)
                                             loading = false
                                         }
-                                    }
-                                    .addOnFailureListener { e ->
+                                    },
+                                    onError = { error ->
                                         loading = false
                                         scope.launch {
-                                            snackbarHostState.showSnackbar(
-                                                e.message ?: "Login failed"
-                                            )
+                                            snackbarHostState.showSnackbar(error)
                                         }
                                     }
+                                )
 
                             },
-                            enabled = !loading,
+                            enabled = !loading && authViewModel != null,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(55.dp),
@@ -189,6 +197,6 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     StudyMateTheme {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen(navController = rememberNavController(), userDao = FakeUserDao(), authViewModel = null)
     }
 }

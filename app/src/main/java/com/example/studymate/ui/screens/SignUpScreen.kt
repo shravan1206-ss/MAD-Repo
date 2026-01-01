@@ -53,7 +53,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel?
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -63,6 +64,7 @@ fun SignUpScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    // UI Colors
     val buttonColor = Color(0xFF6A5AE0)
     val titleColor = Color(0xFF2D2A45)
     val subtitleColor = Color(0xFF7A78A1)
@@ -101,7 +103,6 @@ fun SignUpScreen(
                             fontWeight = FontWeight.Bold,
                             color = titleColor
                         )
-
                         Spacer(Modifier.height(6.dp))
                         Text("Join StudyMate today!", fontSize = 16.sp, color = subtitleColor)
                         Spacer(Modifier.height(30.dp))
@@ -155,18 +156,29 @@ fun SignUpScreen(
                         Button(
                             onClick = {
                                 if (email.isBlank() || password.isBlank() || fullName.isBlank()) {
-                                    scope.launch { snackbarHostState.showSnackbar("All fields are required!") }
+                                    scope.launch { snackbarHostState.showSnackbar("All fields are required") }
                                     return@Button
                                 }
-
                                 loading = true
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("Account creation simulated!")
-                                    loading = false
-                                    navController.navigate("login")
-                                }
+
+                                authViewModel?.signUp(
+                                    username = fullName,
+                                    email = email,
+                                    password = password,
+                                    onSuccess = {
+                                        loading = false
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Account created successfully!")
+                                        }
+                                        navController.navigate("login")
+                                    },
+                                    onError = { error ->
+                                        loading = false
+                                        scope.launch { snackbarHostState.showSnackbar(error) }
+                                    }
+                                )
                             },
-                            enabled = !loading,
+                            enabled = !loading && authViewModel != null,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(55.dp),
@@ -192,7 +204,10 @@ fun SignUpScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("Already have an account? ", color = subtitleColor)
 
-                            TextButton(onClick = { navController.navigate("login") }) {
+                            TextButton(
+                                onClick = { navController.navigate("login") },
+                                enabled = !loading
+                            ) {
                                 Text("Login", color = buttonColor, fontWeight = FontWeight.Bold)
                             }
                         }
@@ -204,11 +219,10 @@ fun SignUpScreen(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun SignUpScreenPreview() {
     StudyMateTheme {
-        SignUpScreen(navController = rememberNavController())
+        SignUpScreen(navController = rememberNavController(), authViewModel = null)
     }
 }
