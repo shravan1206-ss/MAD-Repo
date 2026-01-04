@@ -1,6 +1,5 @@
 package com.example.studymate.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -61,7 +60,7 @@ fun SignUpScreen(
     var fullName by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     // UI Colors
@@ -71,7 +70,7 @@ fun SignUpScreen(
 
     AppBackground {
         Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
+            snackbarHost = { SnackbarHost(snackBar) },
             containerColor = Color.Transparent
         ) { paddingValues ->
 
@@ -156,7 +155,7 @@ fun SignUpScreen(
                         Button(
                             onClick = {
                                 if (email.isBlank() || password.isBlank() || fullName.isBlank()) {
-                                    scope.launch { snackbarHostState.showSnackbar("All fields are required") }
+                                    scope.launch { snackBar.showSnackbar("All fields are required") }
                                     return@Button
                                 }
                                 loading = true
@@ -168,13 +167,13 @@ fun SignUpScreen(
                                     onSuccess = {
                                         loading = false
                                         scope.launch {
-                                            snackbarHostState.showSnackbar("Account created successfully!")
+                                            snackBar.showSnackbar("Account created successfully!")
                                         }
-                                        navController.navigate("login")
+                                        navController.navigate("LoginScreen")
                                     },
                                     onError = { error ->
                                         loading = false
-                                        scope.launch { snackbarHostState.showSnackbar(error) }
+                                        scope.launch { snackBar.showSnackbar(error) }
                                     }
                                 )
                             },
@@ -205,7 +204,7 @@ fun SignUpScreen(
                             Text("Already have an account? ", color = subtitleColor)
 
                             TextButton(
-                                onClick = { navController.navigate("login") },
+                                onClick = { navController.navigate("LoginScreen") },
                                 enabled = !loading
                             ) {
                                 Text("Login", color = buttonColor, fontWeight = FontWeight.Bold)

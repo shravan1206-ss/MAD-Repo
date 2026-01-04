@@ -10,11 +10,16 @@ import com.example.studymate.ui.theme.AppBackground
 import com.example.studymate.ui.theme.StudyMateTheme
 import com.google.firebase.FirebaseApp
 
+import com.example.studymate.notification.worker.scheduleTestQuoteWorker
+
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         FirebaseApp.initializeApp(this)
+
+        scheduleTestQuoteWorker(this)
 
         val db = DatabaseModule.getDb(this)
         val userDao = db.userDao()
@@ -23,7 +28,7 @@ class MainActivity : ComponentActivity() {
             StudyMateTheme {
                 AppBackground {
                     NavGraph(
-                        startDestination = "splash",
+                        startDestination = "SplashScreen",
                         userDao = userDao
                     )
                 }

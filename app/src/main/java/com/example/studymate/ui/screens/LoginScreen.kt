@@ -37,17 +37,16 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    // UI Colors
     val buttonColor = Color(0xFF6A5AE0)
     val titleColor = Color(0xFF2D2A45)
     val subtitleColor = Color(0xFF7A78A1)
 
     AppBackground {
         Scaffold(
-            snackbarHost = { SnackbarHost(snackbarHostState) },
+            snackbarHost = { SnackbarHost(snackBar) },
             containerColor = Color.Transparent
         ) { paddingValues ->
 
@@ -118,7 +117,7 @@ fun LoginScreen(
                             onClick = {
                                 if (email.isBlank() || password.isBlank()) {
                                     scope.launch {
-                                        snackbarHostState.showSnackbar("Enter email & password")
+                                        snackBar.showSnackbar("Enter email & password")
                                     }
                                     return@Button
                                 }
@@ -134,12 +133,12 @@ fun LoginScreen(
                                                 UserEntity(email = email)
                                             )
 
-                                            navController.navigate("home1") {
-                                                popUpTo("splash") { inclusive = true }
+                                            navController.navigate("HomeScreen") {
+                                                popUpTo("SplashScreen") { inclusive = true }
                                                 launchSingleTop = true
                                             }
 
-                                            snackbarHostState.showSnackbar("Successfully Logged In!")
+                                            snackBar.showSnackbar("Successfully Logged In!")
                                             delay(200)
                                             loading = false
                                         }
@@ -147,7 +146,7 @@ fun LoginScreen(
                                     onError = { error ->
                                         loading = false
                                         scope.launch {
-                                            snackbarHostState.showSnackbar(error)
+                                            snackBar.showSnackbar(error)
                                         }
                                     }
                                 )

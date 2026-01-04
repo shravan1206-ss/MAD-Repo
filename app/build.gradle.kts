@@ -55,6 +55,9 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.appcompat)
 
     // Accompanist Navigation Animation
     val accompanistVersion = "0.34.0"
@@ -87,5 +90,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
 }

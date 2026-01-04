@@ -5,16 +5,17 @@ import androidx.room.Room
 import com.example.studymate.db.AppDatabase
 
 object DatabaseModule {
+
+    @Volatile
     private var INSTANCE: AppDatabase? = null
 
     fun getDb(context: Context): AppDatabase {
-        if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(
+        return INSTANCE ?: synchronized(this) {
+            INSTANCE ?: Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
                 "studymate_db"
-            ).build()
+            ).build().also { INSTANCE = it }
         }
-        return INSTANCE!!
     }
 }

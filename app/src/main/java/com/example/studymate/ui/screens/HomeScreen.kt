@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ListAlt
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Timer
@@ -31,6 +29,7 @@ import com.example.studymate.ui.theme.AppBackground
 import com.example.studymate.ui.theme.StudyMateTheme
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -44,14 +43,13 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Home") },
+                title = { Text("Home \uD83C\uDFE1") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = Color.White
                 ),
                 modifier = Modifier.shadow(8.dp),
 
-                // ----------- LOGOUT ICON HERE ------------
                 actions = {
                     IconButton(onClick = { showLogoutDialog = true }) {
                         Icon(
@@ -76,7 +74,7 @@ fun HomeScreen(
 
                 item {
                     Text(
-                        "Hello, User!",
+                        "Hello, Shravan!",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.DarkGray
@@ -91,47 +89,26 @@ fun HomeScreen(
 
                 item {
                     FeatureCard(
+                        icon = Icons.Default.School,
+                        title = "Subject Planner",
+                        description = "Plan what to study and when to study it.",
+                        color = Color(0xFF4CAF50)
+                    ) {
+                        navController.navigate("SubjectPlannerScreen")
+                    }
+                }
+
+                item {
+                    FeatureCard(
                         icon = Icons.Default.Timer,
                         title = "Study Timer",
                         description = "Start a focused session.",
                         color = MaterialTheme.colorScheme.primary
                     ) {
-                        navController.navigate("timer")
+                        navController.navigate("StudyTimerScreen")
                     }
                 }
 
-                item {
-                    FeatureCard(
-                        icon = Icons.Default.School,
-                        title = "Subjects",
-                        description = "Manage your courses and notes.",
-                        color = Color(0xFF4CAF50)
-                    ) {
-                        navController.navigate("subjects")
-                    }
-                }
-
-                item {
-                    FeatureCard(
-                        icon = Icons.Default.ListAlt,
-                        title = "Tasks & Goals",
-                        description = "View your pending assignments.",
-                        color = Color(0xFFF44336)
-                    ) {
-                        navController.navigate("tasks")
-                    }
-                }
-
-                item {
-                    FeatureCard(
-                        icon = Icons.Default.Notifications,
-                        title = "Notifications",
-                        description = "Stay reminded and on track.",
-                        color = Color(0xFFFF9800)
-                    ) {
-                        navController.navigate("notifications")
-                    }
-                }
 
                 item {
                     FeatureCard(
@@ -140,27 +117,25 @@ fun HomeScreen(
                         description = "Get inspiring study quotes.",
                         color = Color(0xFF673AB7)
                     ) {
-                        navController.navigate("quotes")
+                        navController.navigate("MotivationScreen")
                     }
                 }
             }
         }
     }
 
-    // ----------------- LOGOUT CONFIRMATION DIALOG -----------------
     if (showLogoutDialog) {
         AlertDialog(
-            onDismissRequest = { showLogoutDialog = false },
+            onDismissRequest = { },
 
             title = { Text("Confirm Logout!") },
             text = { Text("Are you sure you want to log out?") },
 
             confirmButton = {
                 TextButton(onClick = {
-                    showLogoutDialog = false
                     scope.launch {
                         userDao.clearUser()
-                        navController.navigate("login") {
+                        navController.navigate("LoginScreen") {
                             popUpTo(0)
                         }
                     }
@@ -170,7 +145,7 @@ fun HomeScreen(
             },
 
             dismissButton = {
-                TextButton(onClick = { showLogoutDialog = false }) {
+                TextButton(onClick = { }) {
                     Text("Cancel", color = MaterialTheme.colorScheme.primary)
                 }
             }
@@ -238,19 +213,16 @@ fun FeatureCard(
 
 class FakeUserDao : UserDAO {
     override suspend fun saveUser(user: UserEntity) {
-        // No-op for preview
     }
 
     override suspend fun deleteUser(user: UserEntity) {
-        // No-op for preview
     }
 
-    override suspend fun getUser(): UserEntity? {
+    override suspend fun getUser(): UserEntity {
         return UserEntity(email = "user@example.com")
     }
 
     override suspend fun clearUser() {
-        // No-op for preview
     }
 }
 
